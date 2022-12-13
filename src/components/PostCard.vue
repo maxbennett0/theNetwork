@@ -1,7 +1,7 @@
 <template>
   <div class="row bg-white m-4 text-break elevation-5">
     <div>
-      <router-link :to="{ name: 'Profile' }">
+      <router-link :to="{ name: 'Profile', params: { profileId: post?.creatorId } }">
         <img class="img-fluid post-img my-2" :src="post.creator.picture" alt="">
       </router-link>
     </div>
@@ -10,6 +10,12 @@
     <div>
       <img class="img-fluid" :src="post.imgUrl" alt="">
     </div>
+    <button class="btn btn-primary" @click.prevent="createLikes">
+      {{ post.likeIds.length }}
+    </button>
+    <h6>{{ new Date(post.createdAt).toLocaleDateString() }}</h6>
+    <button v-if="(post.creatorId == account.id)" @click="removePost(post.id)"
+      class="btn btn-danger delete-btn rounded-pill"><i class="  px-2 mdi mdi-delete-forever"></i></button>
   </div>
 </template>
 
@@ -19,6 +25,7 @@ import { AppState } from '../AppState';
 import { computed, reactive, onMounted } from 'vue';
 import { Post } from "../models/Post.js";
 import { Account } from "../models/Account.js";
+import { postsService } from "../services/PostsService.js";
 export default {
   props: {
     post: {
@@ -26,8 +33,14 @@ export default {
       required: true
     },
   },
-  setup() {
+  setup(props) {
     return {
+      async createLikes() {
+        await postsService.createLikes(props.post.id)
+      },
+      async removePost() {
+        await postsService.removePost(props.post.id)
+      },
       account: computed(() => AppState.account)
     }
   }

@@ -4,6 +4,7 @@
     <img class="rounded" :src="account.picture" alt="" />
     <p>{{ account.email }}</p>
   </div>
+  <!--TODO add in a form to edit account with all required fields   -->
 </template>
 
 <script>
